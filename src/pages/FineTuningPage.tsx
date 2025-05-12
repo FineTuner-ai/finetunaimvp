@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -98,6 +97,15 @@ const FineTuningPage = () => {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Fine-Tuning Workspace</h1>
         <p className="text-gray-400">Create and manage your fine-tuning projects</p>
+        <div className="flex justify-end items-center mb-6">
+          <Button 
+            className="finetun-btn-primary flex items-center"
+            onClick={handleCreateProject}
+          >
+            <Plus size={18} className="mr-2" />
+           Create job
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -115,16 +123,7 @@ const FineTuningPage = () => {
         ))}
       </div>
       
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Your Projects</h2>
-        <Button 
-          className="finetun-btn-primary flex items-center"
-          onClick={handleCreateProject}
-        >
-          <Plus size={18} className="mr-2" />
-          New Project
-        </Button>
-      </div>
+     
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (

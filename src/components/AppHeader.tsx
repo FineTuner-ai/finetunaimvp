@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+import { FaUser } from "react-icons/fa";
 import Logo from "../../public/logo.png"
 type AppHeaderProps = {
   username?: string;
@@ -7,7 +8,7 @@ type AppHeaderProps = {
 
 export const AppHeader = ({
   username = "blockdevrel",
-  avatarUrl = "https://github.com/shadcn.png",
+  avatarUrl = "https://github.com",
 }: AppHeaderProps) => {
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-finetun-dark-lighter bg-finetun-dark">
@@ -34,12 +35,8 @@ export const AppHeader = ({
             </div>
           </div>
           <div className="flex items-center space-x-3">
-            <div className="h-9 w-9 rounded-full overflow-hidden border-2 border-finetun-purple">
-              <img
-                src={avatarUrl}
-                alt={`${username}'s avatar`}
-                className="h-full w-full object-cover"
-              />
+            <div className="h-9 w-9 rounded-full overflow-hidden border-2 border-finetun-purple flex items-center justify-center bg-finetun-dark-light">
+              <FaUser className="h-5 w-5 text-gray-400" />
             </div>
             <span className="text-sm font-medium text-gray-200">{username}</span>
           </div>
