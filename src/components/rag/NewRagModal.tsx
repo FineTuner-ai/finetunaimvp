@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { X, File, Upload, Database, Server, Check, Globe, Loader2 } from 'lucide-react';
@@ -281,6 +280,9 @@ const RetrieverSetupStep = () => {
 };
 
 const ModelSelectionStep = () => {
+  // Default prompt template as a string with proper escaping for the template variables
+  const defaultPromptTemplate = `You are an assistant that answers questions based on the context below.\n\nContext: {{context}}\n\nQuestion: {{question}}\n\nAnswer:`;
+
   return (
     <div className="space-y-6">
       <div>
@@ -326,9 +328,9 @@ const ModelSelectionStep = () => {
           <label className="block text-sm font-medium">Prompt Template</label>
           <textarea 
             className="finetun-input w-full h-32" 
-            defaultValue={`You are an assistant that answers questions based on the context below.\n\nContext: {{context}}\n\nQuestion: {{question}}\n\nAnswer:`}
+            defaultValue={defaultPromptTemplate}
           ></textarea>
-          <p className="text-xs text-gray-400">Template used to format queries to the model. Use {{context}} and {{question}} placeholders.</p>
+          <p className="text-xs text-gray-400">Template used to format queries to the model. Use {"{{context}}"} and {"{{question}}"} placeholders.</p>
         </div>
       </div>
     </div>
