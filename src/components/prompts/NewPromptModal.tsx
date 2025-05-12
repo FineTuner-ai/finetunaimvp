@@ -112,7 +112,7 @@ export const NewPromptModal = ({ isOpen, onClose }: NewPromptModalProps) => {
                 className="finetun-input h-[200px]" 
                 value={promptTemplate} 
                 onChange={(e) => setPromptTemplate(e.target.value)} 
-                placeholder="Write your prompt template here. Use {{variable}} for dynamic content."
+                placeholder="Write your prompt template here. Use {{variableName}} for dynamic content."
               />
             </div>
           </div>
