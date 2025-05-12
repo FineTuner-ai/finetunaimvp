@@ -1,144 +1,164 @@
 
-import { useState } from 'react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription,
-  DialogFooter
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
 
-type NewPromptModalProps = {
+interface NewPromptModalProps {
   isOpen: boolean;
   onClose: () => void;
-};
+}
 
 export const NewPromptModal = ({ isOpen, onClose }: NewPromptModalProps) => {
-  const [promptName, setPromptName] = useState("");
-  const [promptText, setPromptText] = useState("");
-  const [activeTab, setActiveTab] = useState("single");
+  const [step, setStep] = useState(1);
+  const [promptName, setPromptName] = useState('');
+  const [promptDescription, setPromptDescription] = useState('');
+  const [promptTemplate, setPromptTemplate] = useState('');
+  const { toast } = useToast();
+  
+  const totalSteps = 3;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would typically submit the form data
-    console.log("Creating new prompt:", { promptName, promptText });
-    
-    // Reset form and close modal
-    setPromptName("");
-    setPromptText("");
+  const handleNext = () => {
+    if (step < totalSteps) {
+      setStep(step + 1);
+    } else {
+      handleSubmit();
+    }
+  };
+
+  const handleBack = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+
+  const handleSubmit = () => {
+    toast({
+      title: "Prompt Created",
+      description: `${promptName} has been created successfully`,
+    });
     onClose();
+    // Reset form
+    setStep(1);
+    setPromptName('');
+    setPromptDescription('');
+    setPromptTemplate('');
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-finetun-dark-light border-finetun-dark-lighter">
+      <DialogContent className="sm:max-w-[500px] bg-finetun-dark-light border-finetun-dark-lighter">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-white">Create New Prompt</DialogTitle>
-          <DialogDescription className="text-gray-400">
-            Design a prompt template for your AI models.
-          </DialogDescription>
+          <DialogTitle>Create New Prompt</DialogTitle>
         </DialogHeader>
-
-        <Tabs defaultValue="single" value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-2 w-full bg-finetun-dark">
-            <TabsTrigger value="single">Single Prompt</TabsTrigger>
-            <TabsTrigger value="collection">Prompt Collection</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="single">
-            <form onSubmit={handleSubmit} className="space-y-6 pt-4">
-              <div className="space-y-2">
-                <Label htmlFor="prompt-name">Prompt Name</Label>
-                <Input 
-                  id="prompt-name" 
-                  value={promptName}
-                  onChange={(e) => setPromptName(e.target.value)}
-                  className="finetun-input"
-                  placeholder="E.g., Customer Inquiry Handler"
-                  required
-                />
+        
+        <div className="flex items-center justify-center mb-4">
+          {Array.from({ length: totalSteps }).map((_, index) => (
+            <React.Fragment key={index}>
+              <div 
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  index + 1 === step 
+                    ? 'bg-finetun-purple text-white' 
+                    : index + 1 < step 
+                    ? 'bg-finetun-purple/30 text-white' 
+                    : 'bg-finetun-dark-lighter text-gray-400'
+                }`}
+              >
+                {index + 1}
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="prompt-text">Prompt Template</Label>
-                <textarea 
-                  id="prompt-text"
-                  value={promptText}
-                  onChange={(e) => setPromptText(e.target.value)}
-                  className="finetun-input w-full min-h-[180px]"
-                  placeholder="You are a customer service agent for {{company_name}}. Your task is to answer questions about {{product_name}} in a helpful and friendly manner. The customer's question is: {{customer_question}}"
-                  required
-                />
-                <p className="text-xs text-gray-400">
-                  Use {{variable_name}} for variables that will be replaced at runtime.
-                </p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Available Models</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {['GPT-4o', 'Llama-3', 'Claude'].map((model) => (
-                    <Button 
-                      key={model}
-                      type="button"
-                      variant="outline" 
-                      className="finetun-btn-secondary"
-                    >
-                      {model}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              
-              <DialogFooter className="pt-4">
-                <Button type="button" variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button type="submit" className="finetun-btn-primary">
-                  Save Prompt
-                </Button>
-              </DialogFooter>
-            </form>
-          </TabsContent>
-          
-          <TabsContent value="collection">
-            <div className="space-y-6 pt-4">
-              <div className="space-y-2">
-                <Label htmlFor="collection-name">Collection Name</Label>
-                <Input 
-                  id="collection-name" 
-                  className="finetun-input"
-                  placeholder="E.g., Customer Support Templates"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Prompts in Collection</Label>
-                <div className="border border-finetun-dark-lighter rounded-md p-4 space-y-4">
-                  <p className="text-center text-gray-400">No prompts added yet</p>
-                  <Button variant="outline" className="w-full finetun-btn-secondary">
-                    Add Prompt to Collection
-                  </Button>
-                </div>
-              </div>
-              
-              <DialogFooter className="pt-4">
-                <Button type="button" variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button type="button" className="finetun-btn-primary">
-                  Save Collection
-                </Button>
-              </DialogFooter>
+              {index < totalSteps - 1 && (
+                <div className={`h-1 w-12 ${
+                  index + 1 < step ? 'bg-finetun-purple/30' : 'bg-finetun-dark-lighter'
+                }`} />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+        
+        {step === 1 && (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Prompt Name</Label>
+              <Input 
+                id="name" 
+                className="finetun-input" 
+                value={promptName} 
+                onChange={(e) => setPromptName(e.target.value)} 
+                placeholder="E.g., Customer Support Helper"
+              />
             </div>
-          </TabsContent>
-        </Tabs>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea 
+                id="description" 
+                className="finetun-input" 
+                value={promptDescription} 
+                onChange={(e) => setPromptDescription(e.target.value)} 
+                placeholder="Describe what this prompt does..."
+              />
+            </div>
+          </div>
+        )}
+        
+        {step === 2 && (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="template">Prompt Template</Label>
+              <Textarea 
+                id="template" 
+                className="finetun-input h-[200px]" 
+                value={promptTemplate} 
+                onChange={(e) => setPromptTemplate(e.target.value)} 
+                placeholder="Write your prompt template here. Use {{variable}} for dynamic content."
+              />
+            </div>
+          </div>
+        )}
+        
+        {step === 3 && (
+          <div className="space-y-4">
+            <div className="p-4 bg-finetun-dark border border-finetun-dark-lighter rounded-md">
+              <h4 className="font-medium mb-2">Prompt Details</h4>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <span className="text-gray-400">Name:</span>
+                <span>{promptName}</span>
+                <span className="text-gray-400">Description:</span>
+                <span>{promptDescription}</span>
+              </div>
+            </div>
+            <div className="p-4 bg-finetun-dark border border-finetun-dark-lighter rounded-md">
+              <h4 className="font-medium mb-2">Template</h4>
+              <pre className="text-xs bg-finetun-dark-lighter p-2 rounded whitespace-pre-wrap">
+                {promptTemplate}
+              </pre>
+            </div>
+          </div>
+        )}
+        
+        <DialogFooter className="flex justify-between">
+          {step > 1 ? (
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="finetun-btn-secondary" 
+              onClick={handleBack}
+            >
+              Back
+            </Button>
+          ) : (
+            <div />
+          )}
+          <Button 
+            type="button" 
+            className="finetun-btn-primary" 
+            onClick={handleNext}
+          >
+            {step < totalSteps ? 'Next' : 'Create Prompt'}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

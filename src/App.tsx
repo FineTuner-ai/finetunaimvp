@@ -1,5 +1,5 @@
 
-import React from "react";
+import * as React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,27 +20,25 @@ const queryClient = new QueryClient();
 // Define App as a function component
 const App: React.FC = () => {
   return (
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/rag" element={<RagPage />} />
-              <Route path="/fine-tuning" element={<FineTuningPage />} />
-              <Route path="/models" element={<ModelsPage />} />
-              <Route path="/prompts" element={<PromptsPage />} />
-              <Route path="/deploy" element={<DeployPage />} />
-              <Route path="/playground" element={<PlaygroundPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/rag" element={<RagPage />} />
+            <Route path="/fine-tuning" element={<FineTuningPage />} />
+            <Route path="/models" element={<ModelsPage />} />
+            <Route path="/prompts" element={<PromptsPage />} />
+            <Route path="/deploy" element={<DeployPage />} />
+            <Route path="/playground" element={<PlaygroundPage />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 };
 
