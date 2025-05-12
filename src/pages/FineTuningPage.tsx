@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { NewProjectModal } from '@/components/fine-tuning/NewProjectModal';
 import { ProjectCard } from '@/components/fine-tuning/ProjectCard';
 import { Plus, Activity, Database, HardDrive } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const projects = [
   {
@@ -45,6 +46,32 @@ const projects = [
 
 const FineTuningPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { toast } = useToast();
+
+  const handleCreateProject = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleProjectCardClick = (id: number) => {
+    // Find the project
+    const project = projects.find(p => p.id === id);
+    
+    if (project) {
+      if (project.status === 'Completed') {
+        toast({
+          title: "Opening in Playground",
+          description: `Opening ${project.name} in the playground.`
+        });
+        // Navigate to playground or open in playground
+      } else if (project.status === 'Training') {
+        toast({
+          title: "Training Details",
+          description: `Viewing details for ${project.name}.`
+        });
+        // Show training details
+      }
+    }
+  };
 
   const statsCards = [
     {
@@ -99,7 +126,7 @@ const FineTuningPage = () => {
         <h2 className="text-xl font-semibold">Your Projects</h2>
         <Button 
           className="finetun-btn-primary flex items-center"
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleCreateProject}
         >
           <Plus size={18} className="mr-2" />
           New Project
@@ -115,6 +142,7 @@ const FineTuningPage = () => {
             status={project.status}
             progress={project.progress}
             lastUpdated={project.lastUpdated}
+            onClick={() => handleProjectCardClick(project.id)}
           />
         ))}
       </div>

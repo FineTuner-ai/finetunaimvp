@@ -6,6 +6,7 @@ import { RagModelCard } from '@/components/rag/RagModelCard';
 import { NewRagModal } from '@/components/rag/NewRagModal';
 import { Plus, Database, HardDrive, Activity, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 const categories = [
   { id: 'text-to-text', label: 'Text-to-text' },
@@ -28,10 +29,29 @@ const models = [
 const RagPage = () => {
   const [activeCategory, setActiveCategory] = useState(categories[0].id);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { toast } = useToast();
 
   const filteredModels = models.filter(
     (model) => model.category.toLowerCase() === activeCategory.replace('-', '-')
   );
+
+  const handleCreateRagPipeline = () => {
+    setIsModalOpen(true);
+  };
+  
+  const handleModalSubmit = (data: any) => {
+    toast({
+      title: "RAG Pipeline Created",
+      description: "Your RAG pipeline has been successfully deployed."
+    });
+  };
+
+  const handleModelCardClick = (modelId: number) => {
+    // Get the selected model
+    const selectedModel = models.find(model => model.id === modelId);
+    // Open the modal with the selected model pre-selected
+    setIsModalOpen(true);
+  };
 
   const statsCards = [
     {
@@ -89,7 +109,7 @@ const RagPage = () => {
         />
         <button
           className="finetun-btn-primary flex items-center"
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleCreateRagPipeline}
         >
           <Plus size={18} className="mr-2" />
           New RAG Pipeline
@@ -104,7 +124,7 @@ const RagPage = () => {
             category={model.category}
             documentsCount={model.documentsCount}
             lastUpdated={model.lastUpdated}
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => handleModelCardClick(model.id)}
           />
         ))}
       </div>
@@ -112,6 +132,7 @@ const RagPage = () => {
       <NewRagModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
+        onSubmit={handleModalSubmit}
       />
     </AppLayout>
   );

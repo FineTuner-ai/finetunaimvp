@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 
 type NewDeploymentModalProps = {
   isOpen: boolean;
@@ -21,15 +22,44 @@ type NewDeploymentModalProps = {
 export const NewDeploymentModal = ({ isOpen, onClose }: NewDeploymentModalProps) => {
   const [deploymentName, setDeploymentName] = useState("");
   const [activeTab, setActiveTab] = useState("api");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [isDeploying, setIsDeploying] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically submit the form data
-    console.log("Creating new deployment:", { deploymentName, type: activeTab });
     
-    // Reset form and close modal
-    setDeploymentName("");
-    onClose();
+    if (!deploymentName || !selectedModel) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide a deployment name and select a model",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Begin deployment process
+    setIsDeploying(true);
+    
+    // Simulate deployment processing
+    setTimeout(() => {
+      setIsDeploying(false);
+      
+      // Success message
+      toast({
+        title: "Deployment Created",
+        description: `${deploymentName} has been deployed successfully as a ${activeTab.toUpperCase()} endpoint.`
+      });
+      
+      // Reset form and close modal
+      setDeploymentName("");
+      setSelectedModel("");
+      onClose();
+    }, 2000);
+  };
+  
+  const handleModelSelection = (model: string) => {
+    setSelectedModel(model);
   };
 
   return (
@@ -69,6 +99,8 @@ export const NewDeploymentModal = ({ isOpen, onClose }: NewDeploymentModalProps)
                   id="select-model"
                   className="finetun-input w-full"
                   required
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
                 >
                   <option value="">Select a model...</option>
                   <option value="llama">Llama-3.3-70B-Instruct</option>
@@ -127,8 +159,12 @@ export const NewDeploymentModal = ({ isOpen, onClose }: NewDeploymentModalProps)
                 <Button type="button" variant="outline" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button type="submit" className="finetun-btn-primary">
-                  Deploy API
+                <Button 
+                  type="submit" 
+                  className="finetun-btn-primary"
+                  disabled={isDeploying}
+                >
+                  {isDeploying ? "Deploying..." : "Deploy API"}
                 </Button>
               </DialogFooter>
             </form>
@@ -142,6 +178,8 @@ export const NewDeploymentModal = ({ isOpen, onClose }: NewDeploymentModalProps)
                   id="webhook-name" 
                   className="finetun-input"
                   placeholder="E.g., Slack Integration"
+                  value={deploymentName}
+                  onChange={(e) => setDeploymentName(e.target.value)}
                 />
               </div>
               
@@ -172,8 +210,13 @@ export const NewDeploymentModal = ({ isOpen, onClose }: NewDeploymentModalProps)
                 <Button type="button" variant="outline" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button type="button" className="finetun-btn-primary">
-                  Create Webhook
+                <Button 
+                  type="button" 
+                  className="finetun-btn-primary"
+                  onClick={handleSubmit}
+                  disabled={isDeploying}
+                >
+                  {isDeploying ? "Creating..." : "Create Webhook"}
                 </Button>
               </DialogFooter>
             </div>
@@ -184,13 +227,21 @@ export const NewDeploymentModal = ({ isOpen, onClose }: NewDeploymentModalProps)
               <div className="space-y-2">
                 <Label>Export Format</Label>
                 <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" className="finetun-btn-secondary text-left justify-start h-auto py-4">
+                  <Button 
+                    variant="outline" 
+                    className="finetun-btn-secondary text-left justify-start h-auto py-4"
+                    onClick={() => handleModelSelection("huggingface")}
+                  >
                     <div>
                       <h3 className="font-medium text-white text-left">Hugging Face</h3>
                       <p className="text-xs text-gray-400 text-left">Share on Hugging Face Hub</p>
                     </div>
                   </Button>
-                  <Button variant="outline" className="finetun-btn-secondary text-left justify-start h-auto py-4">
+                  <Button 
+                    variant="outline" 
+                    className="finetun-btn-secondary text-left justify-start h-auto py-4"
+                    onClick={() => handleModelSelection("docker")}
+                  >
                     <div>
                       <h3 className="font-medium text-white text-left">Docker</h3>
                       <p className="text-xs text-gray-400 text-left">Package as Docker container</p>
@@ -198,13 +249,21 @@ export const NewDeploymentModal = ({ isOpen, onClose }: NewDeploymentModalProps)
                   </Button>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mt-2">
-                  <Button variant="outline" className="finetun-btn-secondary text-left justify-start h-auto py-4">
+                  <Button 
+                    variant="outline" 
+                    className="finetun-btn-secondary text-left justify-start h-auto py-4"
+                    onClick={() => handleModelSelection("onnx")}
+                  >
                     <div>
                       <h3 className="font-medium text-white text-left">ONNX</h3>
                       <p className="text-xs text-gray-400 text-left">Open Neural Network Exchange</p>
                     </div>
                   </Button>
-                  <Button variant="outline" className="finetun-btn-secondary text-left justify-start h-auto py-4">
+                  <Button 
+                    variant="outline" 
+                    className="finetun-btn-secondary text-left justify-start h-auto py-4"
+                    onClick={() => handleModelSelection("torchscript")}
+                  >
                     <div>
                       <h3 className="font-medium text-white text-left">TorchScript</h3>
                       <p className="text-xs text-gray-400 text-left">PyTorch serialized format</p>
@@ -217,8 +276,13 @@ export const NewDeploymentModal = ({ isOpen, onClose }: NewDeploymentModalProps)
                 <Button type="button" variant="outline" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button type="button" className="finetun-btn-primary">
-                  Export Model
+                <Button 
+                  type="button" 
+                  className="finetun-btn-primary"
+                  onClick={handleSubmit}
+                  disabled={isDeploying}
+                >
+                  {isDeploying ? "Exporting..." : "Export Model"}
                 </Button>
               </DialogFooter>
             </div>

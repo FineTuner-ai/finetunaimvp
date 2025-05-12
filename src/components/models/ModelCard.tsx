@@ -1,5 +1,7 @@
 
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 type ModelCardProps = {
   title: string;
@@ -9,6 +11,9 @@ type ModelCardProps = {
 };
 
 export const ModelCard = ({ title, category = 'LLM', status = 'Ready', onClick }: ModelCardProps) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'ready':
@@ -22,6 +27,24 @@ export const ModelCard = ({ title, category = 'LLM', status = 'Ready', onClick }
       default:
         return 'bg-finetun-dark-lighter text-gray-400';
     }
+  };
+
+  const handleFineTune = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    toast({
+      title: "Fine-tuning Model",
+      description: `Starting fine-tuning for ${title}`,
+    });
+    navigate('/fine-tuning');
+  };
+
+  const handleOpenPlayground = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    toast({
+      title: "Opening in Playground",
+      description: `Opening ${title} in the Playground`,
+    });
+    navigate('/playground');
   };
 
   return (
@@ -48,10 +71,16 @@ export const ModelCard = ({ title, category = 'LLM', status = 'Ready', onClick }
       </div>
       <div className="mt-4 pt-4 border-t border-finetun-dark-lighter">
         <div className="flex justify-between">
-          <button className="finetun-btn-tertiary py-1 flex items-center justify-center">
+          <button 
+            className="finetun-btn-tertiary py-1 flex items-center justify-center"
+            onClick={handleFineTune}
+          >
             Fine-tune
           </button>
-          <button className="finetun-btn-tertiary py-1 flex items-center justify-center">
+          <button 
+            className="finetun-btn-tertiary py-1 flex items-center justify-center"
+            onClick={handleOpenPlayground}
+          >
             Open in Playground
           </button>
         </div>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { 
   Dialog, 
@@ -12,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 
 type NewProjectModalProps = {
   isOpen: boolean;
@@ -21,6 +21,8 @@ type NewProjectModalProps = {
 export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
   const [activeStep, setActiveStep] = useState(1);
   const [projectName, setProjectName] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +31,13 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
     } else {
       // Final submission
       console.log("Creating new fine-tuning project:", { projectName });
+      toast({
+        title: "Project Created",
+        description: `${projectName} has been created successfully`
+      });
       setProjectName("");
       setActiveStep(1);
+      setSelectedFile(null);
       onClose();
     }
   };
@@ -39,6 +46,22 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
     if (activeStep > 1) {
       setActiveStep(activeStep - 1);
     }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setSelectedFile(files[0]);
+      toast({
+        title: "File Uploaded",
+        description: `${files[0].name} has been uploaded successfully`
+      });
+    }
+  };
+
+  const handleBrowseFiles = () => {
+    // Programmatically click the hidden file input
+    document.getElementById('file-upload')?.click();
   };
 
   return (
@@ -100,21 +123,49 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                 <p className="text-gray-400 mb-4">
                   Drag and drop your dataset files here, or click to browse (CSV, JSON)
                 </p>
-                <Button variant="outline" className="finetun-btn-secondary">
+                <input 
+                  type="file" 
+                  id="file-upload"
+                  className="hidden" 
+                  accept=".csv,.json,.jsonl"
+                  onChange={handleFileUpload}
+                />
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  className="finetun-btn-secondary"
+                  onClick={handleBrowseFiles}
+                >
                   Browse Files
                 </Button>
+                {selectedFile && (
+                  <div className="mt-4 p-2 bg-finetun-dark rounded">
+                    <p className="text-sm text-white">Selected: {selectedFile.name}</p>
+                    <p className="text-xs text-gray-400">
+                      Size: {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </div>
+                )}
               </div>
               
               <div className="space-y-2">
                 <Label>Dataset Format</Label>
                 <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" className="finetun-btn-secondary text-left justify-start">
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    className="finetun-btn-secondary text-left justify-start"
+                  >
                     <span className="flex items-center">
                       CSV Format
                       <span className="ml-2 text-xs text-gray-400">(Prompt, Completion)</span>
                     </span>
                   </Button>
-                  <Button variant="outline" className="finetun-btn-secondary text-left justify-start">
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    className="finetun-btn-secondary text-left justify-start"
+                  >
                     <span className="flex items-center">
                       JSONL Format
                       <span className="ml-2 text-xs text-gray-400">(Chat Format)</span>
@@ -245,7 +296,9 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Dataset:</span>
-                    <span className="text-white">custom_dataset.csv (1.2GB)</span>
+                    <span className="text-white">
+                      {selectedFile ? `${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)` : "custom_dataset.csv (1.2GB)"}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Hyperparameters:</span>

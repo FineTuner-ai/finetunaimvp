@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, FileText, Users, Calendar, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 const projects = [
   {
@@ -52,6 +54,8 @@ const projects = [
 
 const ProjectsPage = () => {
   const [activeTab, setActiveTab] = useState('all');
+  const { toast } = useToast();
+  const navigate = useNavigate();
   
   const filteredProjects = activeTab === 'all' 
     ? projects 
@@ -60,6 +64,24 @@ const ProjectsPage = () => {
       : activeTab === 'favorites'
         ? projects.filter(p => p.favorite)
         : projects;
+
+  const handleNewProject = () => {
+    toast({
+      title: "Create New Project",
+      description: "Opening new project creation wizard"
+    });
+    navigate('/fine-tuning');
+  };
+  
+  const handleOpenProject = (projectId: number) => {
+    const project = projects.find(p => p.id === projectId);
+    if (project) {
+      toast({
+        title: "Opening Project",
+        description: `Opening ${project.name}`
+      });
+    }
+  };
 
   return (
     <AppLayout>
@@ -77,7 +99,7 @@ const ProjectsPage = () => {
           </TabsList>
         </Tabs>
         
-        <Button className="finetun-btn-primary flex items-center">
+        <Button className="finetun-btn-primary flex items-center" onClick={handleNewProject}>
           <Plus size={18} className="mr-2" />
           New Project
         </Button>
@@ -85,14 +107,14 @@ const ProjectsPage = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filteredProjects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard key={project.id} project={project} onOpen={() => handleOpenProject(project.id)} />
         ))}
       </div>
     </AppLayout>
   );
 };
 
-const ProjectCard = ({ project }: { project: any }) => {
+const ProjectCard = ({ project, onOpen }: { project: any, onOpen: () => void }) => {
   return (
     <Card className="bg-finetun-dark-light border-finetun-dark-lighter hover:border-finetun-purple/50 transition-all">
       <CardHeader className="pb-2">
@@ -131,7 +153,12 @@ const ProjectCard = ({ project }: { project: any }) => {
             <span>Updated {project.lastUpdated}</span>
           </div>
           
-          <Button variant="outline" size="sm" className="finetun-btn-secondary py-1 px-3 h-8">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="finetun-btn-secondary py-1 px-3 h-8"
+            onClick={onOpen}
+          >
             <FileText size={16} className="mr-1.5" />
             Open
           </Button>
