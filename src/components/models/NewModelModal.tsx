@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { 
   Dialog, 
@@ -12,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 
 type NewModelModalProps = {
   isOpen: boolean;
@@ -19,18 +19,19 @@ type NewModelModalProps = {
 };
 
 export const NewModelModal = ({ isOpen, onClose }: NewModelModalProps) => {
-  const [activeTab, setActiveTab] = useState("new");
   const [modelName, setModelName] = useState("");
-  const [baseModel, setBaseModel] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [comment, setComment] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically submit the form data or process it
-    console.log("Creating new model:", { modelName, baseModel });
+    console.log("Requesting new model:", { modelName, userEmail, comment });
     
     // Reset form and close modal
     setModelName("");
-    setBaseModel("");
+    setUserEmail("");
+    setComment("");
     onClose();
   };
 
@@ -38,80 +39,59 @@ export const NewModelModal = ({ isOpen, onClose }: NewModelModalProps) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] bg-finetun-dark-light border-finetun-dark-lighter">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-white">Create New Model</DialogTitle>
+          <DialogTitle className="text-2xl text-white">Request New Model</DialogTitle>
           <DialogDescription className="text-gray-400">
-            Configure your new AI model or import an existing one.
+            Submit a request for a new AI model.
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="new" value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-2 w-full bg-finetun-dark">
-            <TabsTrigger value="new">Create New Model</TabsTrigger>
-            <TabsTrigger value="import">Import Existing Model</TabsTrigger>
-          </TabsList>
+        <form onSubmit={handleSubmit} className="space-y-6 pt-4">
+          <div className="space-y-2">
+            <Label htmlFor="model-name">Model Name</Label>
+            <Input 
+              id="model-name" 
+              value={modelName}
+              onChange={(e) => setModelName(e.target.value)}
+              className="finetun-input h-10"
+              placeholder="Enter model name"
+              required
+            />
+          </div>
           
-          <TabsContent value="new">
-            <form onSubmit={handleSubmit} className="space-y-6 pt-4">
-              <div className="space-y-2">
-                <Label htmlFor="model-name">Model Name</Label>
-                <Input 
-                  id="model-name" 
-                  value={modelName}
-                  onChange={(e) => setModelName(e.target.value)}
-                  className="finetun-input"
-                  placeholder="My Custom Model"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="base-model">Base Model</Label>
-                <Input 
-                  id="base-model" 
-                  value={baseModel}
-                  onChange={(e) => setBaseModel(e.target.value)}
-                  className="finetun-input"
-                  placeholder="e.g., gpt-4o-mini"
-                  required
-                />
-                <p className="text-xs text-gray-400">
-                  Select a foundation model to build upon or fine-tune.
-                </p>
-              </div>
-              
-              <DialogFooter className="pt-4">
-                <Button type="button" variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button type="submit" className="finetun-btn-primary">
-                  Create Model
-                </Button>
-              </DialogFooter>
-            </form>
-          </TabsContent>
+          <div className="space-y-2">
+            <Label htmlFor="user-email">Your Email</Label>
+            <Input 
+              id="user-email" 
+              type="email"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              className="finetun-input h-10"
+              placeholder="Enter your email address"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="comment">Additional Comments</Label>
+            <Textarea 
+              id="comment" 
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="finetun-input min-h-[120px] resize-y"
+              placeholder="Please provide detailed information about your model requirements, use cases, and any specific features you need..."
+              required
+            />
+          </div>
           
-          <TabsContent value="import">
-            <div className="space-y-6 pt-4">
-              <div className="border-2 border-dashed border-finetun-dark-lighter rounded-lg p-8 text-center">
-                <p className="text-gray-400 mb-4">
-                  Drag and drop your model files here, or click to browse
-                </p>
-                <Button variant="outline" className="finetun-btn-secondary">
-                  Browse Files
-                </Button>
-              </div>
-              
-              <DialogFooter className="pt-4">
-                <Button type="button" variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button type="button" className="finetun-btn-primary" disabled>
-                  Import Model
-                </Button>
-              </DialogFooter>
-            </div>
-          </TabsContent>
-        </Tabs>
+          <DialogFooter className="pt-4">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" className="finetun-btn-primary">
+              Submit Request
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

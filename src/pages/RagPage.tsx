@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { RagCategoryTabs } from '@/components/rag/RagCategoryTabs';
@@ -83,10 +82,21 @@ const RagPage = () => {
   return (
     <AppLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">AutoRAG</h1>
-        <p className="text-gray-400">Deploy RAG pipelines with your models</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">AutoRAG</h1>
+            <p className="text-gray-400">Deploy RAG pipelines with your models</p>
+          </div>
+          <button
+            className="finetun-btn-primary flex items-center"
+            onClick={handleCreateRagPipeline}
+          >
+            <Plus size={18} className="mr-2" />
+            New RAG Pipeline
+          </button>
+        </div>
       </div>
-
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-fade-in">
         {statsCards.map((card, index) => (
           <Card key={index} className="bg-finetun-dark-light border-finetun-dark-lighter">
@@ -101,22 +111,16 @@ const RagPage = () => {
           </Card>
         ))}
       </div>
-
+{/* 
       <div className="mb-6 flex justify-between items-center">
         <RagCategoryTabs
           categories={categories}
           onChange={setActiveCategory}
         />
-        <button
-          className="finetun-btn-primary flex items-center"
-          onClick={handleCreateRagPipeline}
-        >
-          <Plus size={18} className="mr-2" />
-          New RAG Pipeline
-        </button>
-      </div>
+       
+      </div> */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredModels.map((model) => (
           <RagModelCard
             key={model.id}
@@ -127,7 +131,7 @@ const RagPage = () => {
             onClick={() => handleModelCardClick(model.id)}
           />
         ))}
-      </div>
+      </div> */}
 
       <NewRagModal 
         isOpen={isModalOpen} 

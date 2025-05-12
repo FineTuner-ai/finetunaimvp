@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -72,15 +71,24 @@ export const ModelCard = ({ title, category = 'LLM', status = 'Ready', onClick }
       <div className="mt-4 pt-4 border-t border-finetun-dark-lighter">
         <div className="flex justify-between">
           <button 
-            className="finetun-btn-tertiary py-1 flex items-center justify-center"
-            onClick={handleFineTune}
-          >
-            Fine-tune
-          </button>
-          <button 
-            className="finetun-btn-tertiary py-1 flex items-center justify-center"
+            className="finetun-btn-tertiary px-4 ml-10 py-2 flex items-center justify-center gap-2 text-sm font-medium rounded-md bg-finetun-dark-lighter transition-colors"
             onClick={handleOpenPlayground}
           >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-finetun-purple"
+            >
+              <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>
+              <path d="M7 7h.01"/>
+            </svg>
             Open in Playground
           </button>
         </div>
