@@ -34,14 +34,7 @@ const projects = [
     progress: 45,
     lastUpdated: '3 days ago'
   },
-  {
-    id: 4,
-    name: 'Text Summarizer',
-    model: 'DeepSeek-V3',
-    status: 'Pending',
-    progress: 0,
-    lastUpdated: 'Just now'
-  }
+  
 ];
 
 const FineTuningPage = () => {

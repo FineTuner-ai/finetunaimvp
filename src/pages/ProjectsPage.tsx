@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { Button } from '@/components/ui/button';
@@ -40,16 +39,7 @@ const projects = [
     status: 'inactive',
     favorite: true
   },
-  {
-    id: 4,
-    name: 'Product Recommendation Engine',
-    description: 'Personalized product recommendations based on user browsing and purchase history',
-    team: ['James B.', 'Anna K.'],
-    lastUpdated: '3 days ago',
-    collaborators: 2,
-    status: 'active',
-    favorite: false
-  }
+ 
 ];
 
 const ProjectsPage = () => {
@@ -105,7 +95,7 @@ const ProjectsPage = () => {
         </Button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {filteredProjects.map((project) => (
           <ProjectCard key={project.id} project={project} onOpen={() => handleOpenProject(project.id)} />
         ))}
@@ -117,20 +107,20 @@ const ProjectsPage = () => {
 const ProjectCard = ({ project, onOpen }: { project: any, onOpen: () => void }) => {
   return (
     <Card className="bg-finetun-dark-light border-finetun-dark-lighter hover:border-finetun-purple/50 transition-all">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <div className="flex items-center">
-              <CardTitle className="text-lg">{project.name}</CardTitle>
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-start gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-lg truncate">{project.name}</CardTitle>
               {project.favorite && (
-                <Star size={16} className="ml-2 fill-yellow-500 text-yellow-500" />
+                <Star size={16} className="flex-shrink-0 fill-yellow-500 text-yellow-500" />
               )}
             </div>
-            <p className="text-sm text-gray-400 mt-1">{project.description}</p>
+            <p className="text-sm text-gray-400 mt-1.5 line-clamp-2">{project.description}</p>
           </div>
           <Badge 
             variant="outline" 
-            className={`${
+            className={`flex-shrink-0 ${
               project.status === 'active' 
                 ? 'bg-green-500/20 text-green-400' 
                 : 'bg-gray-500/20 text-gray-400'
@@ -141,28 +131,28 @@ const ProjectCard = ({ project, onOpen }: { project: any, onOpen: () => void }) 
         </div>
       </CardHeader>
       
-      <CardContent>
-        <div className="flex items-center justify-between text-sm pt-2">
+      <CardContent className="space-y-4">
+        <div className="flex flex-col gap-2 text-sm">
           <div className="flex items-center text-gray-400">
-            <Users size={16} className="mr-1.5" />
-            <span>{project.collaborators} collaborators</span>
+            <Users size={16} className="mr-2 flex-shrink-0" />
+            <span className="truncate">{project.collaborators} collaborators</span>
           </div>
           
           <div className="flex items-center text-gray-400">
-            <Calendar size={16} className="mr-1.5" />
-            <span>Updated {project.lastUpdated}</span>
+            <Calendar size={16} className="mr-2 flex-shrink-0" />
+            <span className="truncate">Updated {project.lastUpdated}</span>
           </div>
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="finetun-btn-secondary py-1 px-3 h-8"
-            onClick={onOpen}
-          >
-            <FileText size={16} className="mr-1.5" />
-            Open
-          </Button>
         </div>
+
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="finetun-btn-secondary w-full h-9"
+          onClick={onOpen}
+        >
+          <FileText size={16} className="mr-2" />
+          Open
+        </Button>
       </CardContent>
     </Card>
   );
