@@ -13,6 +13,7 @@ import ModelsPage from "./pages/ModelsPage";
 import PromptsPage from "./pages/PromptsPage";
 import DeployPage from "./pages/DeployPage";
 import PlaygroundPage from "./pages/PlaygroundPage";
+import ProjectsPage from "./pages/ProjectsPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App: React.FC = () => {
             <Route path="/prompts" element={<PromptsPage />} />
             <Route path="/deploy" element={<DeployPage />} />
             <Route path="/playground" element={<PlaygroundPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

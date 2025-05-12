@@ -4,7 +4,8 @@ import { AppLayout } from '@/components/AppLayout';
 import { RagCategoryTabs } from '@/components/rag/RagCategoryTabs';
 import { RagModelCard } from '@/components/rag/RagModelCard';
 import { NewRagModal } from '@/components/rag/NewRagModal';
-import { Plus } from 'lucide-react';
+import { Plus, Database, HardDrive, Activity, Search } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const categories = [
   { id: 'text-to-text', label: 'Text-to-text' },
@@ -13,15 +14,15 @@ const categories = [
 ];
 
 const models = [
-  { id: 1, title: 'Meta-Llama-3.1-Nemotrn-70B-Instruct-HF', category: 'Text-to-text' },
-  { id: 2, title: 'DeepSeek-V3-0324', category: 'Embeddings' },
-  { id: 3, title: 'DeepSeek-V3', category: 'Text-to-image' },
-  { id: 4, title: 'Llama-3.3-70B-Instruct', category: 'Text-to-text' },
-  { id: 5, title: 'Qwen2.5-Coder-7B', category: 'Text-to-text' },
-  { id: 6, title: 'Gemma-2-2b-it', category: 'Text-to-text' },
-  { id: 7, title: 'FineTunAI model 1', category: 'Text-to-text' },
-  { id: 8, title: 'FineTunAI model 2', category: 'Embeddings' },
-  { id: 9, title: 'FineTunAI model 3', category: 'Text-to-image' },
+  { id: 1, title: 'Meta-Llama-3.1-Nemotrn-70B-Instruct-HF', category: 'Text-to-text', documentsCount: 128, lastUpdated: '2 days ago' },
+  { id: 2, title: 'DeepSeek-V3-0324', category: 'Embeddings', documentsCount: 56, lastUpdated: '5 hours ago' },
+  { id: 3, title: 'DeepSeek-V3', category: 'Text-to-image', documentsCount: 42, lastUpdated: '1 week ago' },
+  { id: 4, title: 'Llama-3.3-70B-Instruct', category: 'Text-to-text', documentsCount: 214, lastUpdated: 'Just now' },
+  { id: 5, title: 'Qwen2.5-Coder-7B', category: 'Text-to-text', documentsCount: 89, lastUpdated: '3 days ago' },
+  { id: 6, title: 'Gemma-2-2b-it', category: 'Text-to-text', documentsCount: 37, lastUpdated: '2 weeks ago' },
+  { id: 7, title: 'FineTunAI model 1', category: 'Text-to-text', documentsCount: 156, lastUpdated: '1 day ago' },
+  { id: 8, title: 'FineTunAI model 2', category: 'Embeddings', documentsCount: 64, lastUpdated: '4 days ago' },
+  { id: 9, title: 'FineTunAI model 3', category: 'Text-to-image', documentsCount: 78, lastUpdated: '6 hours ago' },
 ];
 
 const RagPage = () => {
@@ -32,11 +33,53 @@ const RagPage = () => {
     (model) => model.category.toLowerCase() === activeCategory.replace('-', '-')
   );
 
+  const statsCards = [
+    {
+      title: 'Active RAG Pipelines',
+      value: '14',
+      description: '8 in production, 6 in development',
+      icon: <Activity className="h-6 w-6 text-finetun-purple" />,
+    },
+    {
+      title: 'Knowledge Base',
+      value: '2.1 TB',
+      description: '843 documents indexed',
+      icon: <Database className="h-6 w-6 text-finetun-purple" />,
+    },
+    {
+      title: 'Storage',
+      value: '1.8 TB',
+      description: '60% used of 3 TB',
+      icon: <HardDrive className="h-6 w-6 text-finetun-purple" />,
+    },
+    {
+      title: 'Retrieval Rate',
+      value: '98.7%',
+      description: '0.2% increase this week',
+      icon: <Search className="h-6 w-6 text-finetun-purple" />,
+    },
+  ];
+
   return (
     <AppLayout>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">AutoRAG</h1>
         <p className="text-gray-400">Deploy RAG pipelines with your models</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-fade-in">
+        {statsCards.map((card, index) => (
+          <Card key={index} className="bg-finetun-dark-light border-finetun-dark-lighter">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-gray-400">{card.title}</CardTitle>
+              {card.icon}
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold mb-1">{card.value}</div>
+              <p className="text-xs text-gray-400">{card.description}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <div className="mb-6 flex justify-between items-center">
@@ -59,6 +102,8 @@ const RagPage = () => {
             key={model.id}
             title={model.title}
             category={model.category}
+            documentsCount={model.documentsCount}
+            lastUpdated={model.lastUpdated}
             onClick={() => setIsModalOpen(true)}
           />
         ))}
