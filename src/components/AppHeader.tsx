@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-
+import Logo from "../../public/logo.png"
 type AppHeaderProps = {
   username?: string;
   avatarUrl?: string;
@@ -11,11 +11,9 @@ export const AppHeader = ({
 }: AppHeaderProps) => {
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-finetun-dark-lighter bg-finetun-dark">
-      <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
+      <div className="mx-auto w-full max-w-[1440px]  flex items-center justify-between">
         <div className="flex items-center  space-x-3">
-          <div className="h-9 w-9 rounded-md bg-gradient-to-r from-finetun-purple to-finetun-purple-dark flex items-center justify-center">
-            <span className="text-white font-bold text-lg">F</span>
-          </div>
+         <img src={Logo} alt="FineTunAI Logo" className="h-12 w-10" />
           <span className="text-white font-semibold text-xl tracking-tight">FineTunAI</span>
         </div>
         <div className="flex items-center space-x-6">
