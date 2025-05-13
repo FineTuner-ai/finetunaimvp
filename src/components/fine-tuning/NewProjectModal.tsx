@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 
@@ -22,6 +23,11 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
   const [activeStep, setActiveStep] = useState(1);
   const [projectName, setProjectName] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [baseModel, setBaseModel] = useState("");
+  const [epochs, setEpochs] = useState(3);
+  const [batchSize, setBatchSize] = useState(32);
+  const [learningRate, setLearningRate] = useState(0.0001);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -62,6 +68,10 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
   const handleBrowseFiles = () => {
     // Programmatically click the hidden file input
     document.getElementById('file-upload')?.click();
+  };
+
+  const toggleAdvancedOptions = () => {
+    setShowAdvancedOptions(!showAdvancedOptions);
   };
 
   return (
@@ -180,30 +190,20 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Select Base Model</Label>
-                <div className="grid grid-cols-1 gap-2">
-                  {['Llama-3.3-70B', 'GPT-4o', 'Qwen2.5-Coder-7B', 'DeepSeek-V3'].map((model) => (
-                    <button
-                      key={model}
-                      type="button"
-                      className="finetun-card p-4 flex justify-between items-center hover:border-finetun-purple"
-                    >
-                      <div>
-                        <h3 className="font-medium text-white">{model}</h3>
-                        <p className="text-xs text-gray-400">General purpose LLM</p>
-                      </div>
-                      <div className="flex items-center text-xs text-gray-400">
-                        <span>Select</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="text-xs text-gray-400 mt-2">
-                <p>Or upload your own model checkpoint</p>
-                <Button variant="outline" className="mt-2 finetun-btn-secondary text-sm">
-                  Upload Model
-                </Button>
+                <Select onValueChange={setBaseModel} defaultValue="llama">
+                  <SelectTrigger className="finetun-input">
+                    <SelectValue placeholder="Select a model" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-finetun-dark-light border-finetun-dark-lighter">
+                    <SelectItem value="llama">Llama-3.3-70B</SelectItem>
+                    <SelectItem value="gpt4o">GPT-4o</SelectItem>
+                    <SelectItem value="qwen">Qwen2.5-Coder-7B</SelectItem>
+                    <SelectItem value="deepseek">DeepSeek-V3</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-400 mt-1">
+                  Select the base model you want to fine-tune
+                </p>
               </div>
             </div>
           )}
@@ -214,7 +214,7 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                 <div>
                   <div className="flex justify-between mb-1">
                     <Label htmlFor="epochs">Epochs</Label>
-                    <span className="text-sm text-finetun-purple">3</span>
+                    <span className="text-sm text-finetun-purple">{epochs}</span>
                   </div>
                   <input
                     type="range"
@@ -222,7 +222,8 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                     min="1"
                     max="10"
                     step="1"
-                    defaultValue="3"
+                    value={epochs}
+                    onChange={(e) => setEpochs(parseInt(e.target.value))}
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-gray-400">
@@ -234,7 +235,7 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                 <div>
                   <div className="flex justify-between mb-1">
                     <Label htmlFor="batch-size">Batch Size</Label>
-                    <span className="text-sm text-finetun-purple">32</span>
+                    <span className="text-sm text-finetun-purple">{batchSize}</span>
                   </div>
                   <input
                     type="range"
@@ -242,7 +243,8 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                     min="8"
                     max="128"
                     step="8"
-                    defaultValue="32"
+                    value={batchSize}
+                    onChange={(e) => setBatchSize(parseInt(e.target.value))}
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-gray-400">
@@ -254,7 +256,7 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                 <div>
                   <div className="flex justify-between mb-1">
                     <Label htmlFor="learning-rate">Learning Rate</Label>
-                    <span className="text-sm text-finetun-purple">0.0001</span>
+                    <span className="text-sm text-finetun-purple">{learningRate}</span>
                   </div>
                   <input
                     type="range"
@@ -262,7 +264,8 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                     min="0.00001"
                     max="0.001"
                     step="0.00001"
-                    defaultValue="0.0001"
+                    value={learningRate}
+                    onChange={(e) => setLearningRate(parseFloat(e.target.value))}
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-gray-400">
@@ -273,10 +276,71 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
               </div>
               
               <div className="pt-2">
-                <Button variant="outline" className="w-full finetun-btn-secondary text-sm">
-                  Advanced Options
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="w-full finetun-btn-secondary text-sm"
+                  onClick={toggleAdvancedOptions}
+                >
+                  {showAdvancedOptions ? "Hide Advanced Options" : "Advanced Options"}
                 </Button>
               </div>
+              
+              {showAdvancedOptions && (
+                <div className="space-y-4 pt-2 border-t border-finetun-dark-lighter">
+                  <h3 className="text-sm font-medium text-white pt-2">Advanced Options</h3>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="optimizer">Optimizer</Label>
+                    <Select defaultValue="adamw">
+                      <SelectTrigger className="finetun-input">
+                        <SelectValue placeholder="Select optimizer" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-finetun-dark-light border-finetun-dark-lighter">
+                        <SelectItem value="adamw">AdamW</SelectItem>
+                        <SelectItem value="sgd">SGD</SelectItem>
+                        <SelectItem value="adam">Adam</SelectItem>
+                        <SelectItem value="adafactor">Adafactor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="weight-decay">Weight Decay</Label>
+                    <Input 
+                      id="weight-decay" 
+                      type="number"
+                      defaultValue="0.01"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      className="finetun-input"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="warmup-steps">Warmup Steps</Label>
+                    <Input 
+                      id="warmup-steps" 
+                      type="number"
+                      defaultValue="100"
+                      step="10"
+                      min="0"
+                      className="finetun-input"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" id="gradient-checkpointing" className="finetun-checkbox" />
+                      <Label htmlFor="gradient-checkpointing">Enable Gradient Checkpointing</Label>
+                    </div>
+                    <p className="text-xs text-gray-400 ml-5">
+                      Reduces memory usage but slightly increases computation time
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
           
@@ -292,7 +356,12 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Base Model:</span>
-                    <span className="text-white">Llama-3.3-70B</span>
+                    <span className="text-white">
+                      {baseModel === "llama" ? "Llama-3.3-70B" :
+                       baseModel === "gpt4o" ? "GPT-4o" :
+                       baseModel === "qwen" ? "Qwen2.5-Coder-7B" :
+                       baseModel === "deepseek" ? "DeepSeek-V3" : "Llama-3.3-70B"}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Dataset:</span>
@@ -302,11 +371,11 @@ export const NewProjectModal = ({ isOpen, onClose }: NewProjectModalProps) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Hyperparameters:</span>
-                    <span className="text-white">3 epochs, batch size 32</span>
+                    <span className="text-white">{epochs} epochs, batch size {batchSize}, learning rate {learningRate}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Estimated Time:</span>
-                    <span className="text-white">~4 hours</span>
+                    <span className="text-white">~{Math.round(epochs * 1.5)} hours</span>
                   </div>
                 </div>
               </div>

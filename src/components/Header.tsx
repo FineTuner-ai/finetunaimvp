@@ -1,6 +1,9 @@
 import { Search } from "lucide-react";
 import { FaUser } from "react-icons/fa";
 import Logo from "../../public/logo.png"
+import { Link } from 'react-router-dom';
+
+import React from "react";
 type AppHeaderProps = {
   username?: string;
   avatarUrl?: string;
@@ -8,14 +11,16 @@ type AppHeaderProps = {
 
 export const AppHeader = ({
   username = "blockdevrel",
-  avatarUrl = "https://github.com",
+  // avatarUrl = "https://github.com",
 }: AppHeaderProps) => {
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-finetun-dark-lighter bg-finetun-dark">
       <div className="mx-auto w-full max-w-[1440px]  flex items-center justify-between">
-        <div className="flex items-center  space-x-3">
-         <img src={Logo} alt="FineTunAI Logo" className="h-12 w-10" />
-          <span className="text-white font-semibold text-xl tracking-tight">FineTunAI</span>
+        <div className="flex items-center cursor-pointer space-x-3">
+          <Link to="/" className="flex items-center cursor-pointer space-x-3">
+            <img src={Logo} alt="FineTunAI Logo" className="h-12 w-10" />
+            <span className="text-white font-semibold text-xl tracking-tight">FineTunAI</span>
+          </Link>
         </div>
         <div className="flex items-center space-x-6">
           <div className="w-72">

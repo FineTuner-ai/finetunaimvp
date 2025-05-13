@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '@/components/Layout';
 import { RagCategoryTabs } from '@/components/rag/RagCategoryTabs';
 import { RagModelCard } from '@/components/rag/RagModelCard';
 import { NewRagModal } from '@/components/rag/NewRagModal';

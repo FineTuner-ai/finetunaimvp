@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { AppHeader } from './AppHeader';
+import { AppHeader } from './Header';
 import { SidebarNav } from './SidebarNav';
 
 type AppLayoutProps = {

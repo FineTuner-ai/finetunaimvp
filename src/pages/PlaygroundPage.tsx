@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

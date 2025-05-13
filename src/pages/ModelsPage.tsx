@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '@/components/Layout';
 import { ModelCard } from '@/components/models/ModelCard';
 import { NewModelModal } from '@/components/models/NewModelModal';
 import { ModelCategoryTabs } from '@/components/models/ModelCategoryTabs';
