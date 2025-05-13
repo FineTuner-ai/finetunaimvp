@@ -14,6 +14,8 @@ import PromptsPage from "./pages/PromptsPage";
 import DeployPage from "./pages/DeployPage";
 import PlaygroundPage from "./pages/PlaygroundPage";
 import ProjectsPage from "./pages/ProjectsPage";
+import Login from "./components/login/Login";
+import SingUp from "./pages/SignUp";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -35,6 +37,8 @@ const App: React.FC = () => {
             <Route path="/deploy" element={<DeployPage />} />
             <Route path="/playground" element={<PlaygroundPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signUp" element={<SingUp />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
